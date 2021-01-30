@@ -19,19 +19,13 @@ typedef struct BinomialHeap {
 } BinomialHeap;
 
 BinomialHeap *create_bin_heap();
+
 BinomialNode *create_bin_node(void *value, unsigned int key);
-
-BinomialNode *merge_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2);
-
-BinomialNode *merge_tree(BinomialNode *n1, BinomialNode *n2);
-
-BinomialNode *union_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2);
 
 void bin_heap_enqueue(BinomialHeap *bh1, void *value, unsigned int key);
 
-void bin_heap_remove(BinomialHeap *heap, BinomialNode *node,
-                     BinomialNode *prev);
-
 BinomialNode *bin_heap_dequeue(BinomialHeap *heap);
+
+void delete_heap(BinomialHeap* heap);
 
 #endif /* BINOMIAL_HEAP_H */

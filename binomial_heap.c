@@ -1,5 +1,16 @@
 #include "binomial_heap.h"
 
+
+static BinomialNode *merge_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2);
+
+static BinomialNode *merge_tree(BinomialNode *n1, BinomialNode *n2);
+
+static BinomialNode *union_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2);
+
+static void bin_heap_remove(BinomialHeap *heap, BinomialNode *node, BinomialNode *prev);
+
+static BinomialNode* reverse_list(BinomialNode* node);
+
 BinomialHeap *create_bin_heap() {
   BinomialHeap *heap = (BinomialHeap *)malloc(sizeof(BinomialHeap));
   if (heap != NULL)
@@ -20,7 +31,7 @@ BinomialNode *create_bin_node(void *value, unsigned int key) {
   return node;
 }
 
-BinomialNode *merge_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2) {
+static BinomialNode *merge_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2) {
   if ((bh1->head == NULL) && (bh2->head == NULL))
     return NULL;
   if (bh2->head == NULL)
@@ -62,7 +73,7 @@ BinomialNode *merge_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2) {
   return new_head;
 }
 
-BinomialNode *merge_tree(BinomialNode *n1, BinomialNode *n2) {
+static BinomialNode *merge_tree(BinomialNode *n1, BinomialNode *n2) {
   BinomialNode *temp;
   if (n1->key_value < n2->key_value) {
     temp = n1;
@@ -78,7 +89,7 @@ BinomialNode *merge_tree(BinomialNode *n1, BinomialNode *n2) {
   return n1;
 }
 
-BinomialNode *union_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2) {
+static BinomialNode *union_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2) {
   BinomialNode *new_head = merge_bin_heap(bh1, bh2);
 
   if (new_head == NULL)
@@ -118,7 +129,7 @@ void bin_heap_enqueue(BinomialHeap *bh1, void *value, unsigned int key) {
   free(tempheap);
 }
 
-void bin_heap_remove(BinomialHeap *heap, BinomialNode *node,
+static void bin_heap_remove(BinomialHeap *heap, BinomialNode *node,
                      BinomialNode *prev) {
   if (heap->head == node)
     heap->head = node->sibling;
@@ -126,16 +137,22 @@ void bin_heap_remove(BinomialHeap *heap, BinomialNode *node,
     prev->sibling = node->sibling;
 
   BinomialHeap *tempheap = create_bin_heap();
-  BinomialNode *r_iter_node = node->child;
-  while (r_iter_node != NULL) {
-    BinomialNode *sibling = r_iter_node->sibling;
-    r_iter_node->parent = NULL;
-    r_iter_node->sibling = tempheap->head;
-    tempheap->head = r_iter_node;
-    r_iter_node = sibling;
-  }
 
+  tempheap->head = reverse_list(node->child);
+  
   heap->head = union_bin_heap(heap, tempheap);
+}
+
+static BinomialNode* reverse_list(BinomialNode* node){
+	BinomialNode* new_head = NULL;
+	while (node != NULL) {
+		BinomialNode *sibling = node->sibling;
+		node->parent = NULL;
+		node->sibling = new_head;
+		new_head = node;
+		node = sibling;
+  }
+	return new_head;	
 }
 
 BinomialNode *bin_heap_dequeue(BinomialHeap *heap) {
@@ -159,3 +176,14 @@ BinomialNode *bin_heap_dequeue(BinomialHeap *heap) {
   max_node->child = NULL;
   return max_node;
 }
+
+
+void delete_heap(BinomialHeap* heap){
+	BinomialNode* node = bin_heap_dequeue(heap);
+	while (node != NULL){
+		free(node);
+		node = bin_heap_dequeue(heap);
+	}
+	
+}
+
