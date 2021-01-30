@@ -26,6 +26,6 @@ void bin_heap_enqueue(BinomialHeap *bh1, void *value, unsigned int key);
 
 BinomialNode *bin_heap_dequeue(BinomialHeap *heap);
 
-void delete_heap(BinomialHeap* heap);
+void delete_heap(BinomialHeap *heap);
 
 #endif /* BINOMIAL_HEAP_H */

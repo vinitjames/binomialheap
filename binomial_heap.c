@@ -1,15 +1,15 @@
 #include "binomial_heap.h"
 
-
 static BinomialNode *merge_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2);
 
 static BinomialNode *merge_tree(BinomialNode *n1, BinomialNode *n2);
 
 static BinomialNode *union_bin_heap(BinomialHeap *bh1, BinomialHeap *bh2);
 
-static void bin_heap_remove(BinomialHeap *heap, BinomialNode *node, BinomialNode *prev);
+static void bin_heap_remove(BinomialHeap *heap, BinomialNode *node,
+                            BinomialNode *prev);
 
-static BinomialNode* reverse_list(BinomialNode* node);
+static BinomialNode *reverse_list(BinomialNode *node);
 
 BinomialHeap *create_bin_heap() {
   BinomialHeap *heap = (BinomialHeap *)malloc(sizeof(BinomialHeap));
@@ -130,7 +130,7 @@ void bin_heap_enqueue(BinomialHeap *bh1, void *value, unsigned int key) {
 }
 
 static void bin_heap_remove(BinomialHeap *heap, BinomialNode *node,
-                     BinomialNode *prev) {
+                            BinomialNode *prev) {
   if (heap->head == node)
     heap->head = node->sibling;
   else
@@ -139,20 +139,20 @@ static void bin_heap_remove(BinomialHeap *heap, BinomialNode *node,
   BinomialHeap *tempheap = create_bin_heap();
 
   tempheap->head = reverse_list(node->child);
-  
+
   heap->head = union_bin_heap(heap, tempheap);
 }
 
-static BinomialNode* reverse_list(BinomialNode* node){
-	BinomialNode* new_head = NULL;
-	while (node != NULL) {
-		BinomialNode *sibling = node->sibling;
-		node->parent = NULL;
-		node->sibling = new_head;
-		new_head = node;
-		node = sibling;
+static BinomialNode *reverse_list(BinomialNode *node) {
+  BinomialNode *new_head = NULL;
+  while (node != NULL) {
+    BinomialNode *sibling = node->sibling;
+    node->parent = NULL;
+    node->sibling = new_head;
+    new_head = node;
+    node = sibling;
   }
-	return new_head;	
+  return new_head;
 }
 
 BinomialNode *bin_heap_dequeue(BinomialHeap *heap) {
@@ -177,13 +177,10 @@ BinomialNode *bin_heap_dequeue(BinomialHeap *heap) {
   return max_node;
 }
 
-
-void delete_heap(BinomialHeap* heap){
-	BinomialNode* node = bin_heap_dequeue(heap);
-	while (node != NULL){
-		free(node);
-		node = bin_heap_dequeue(heap);
-	}
-	
+void delete_heap(BinomialHeap *heap) {
+  BinomialNode *node = bin_heap_dequeue(heap);
+  while (node != NULL) {
+    free(node);
+    node = bin_heap_dequeue(heap);
+  }
 }
-
